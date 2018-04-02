@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="CoderMSY&#39;s Blog">
 <meta property="og:description" content="沙盒机制沙盒是一个独立、封闭、安全的空间，每个应用程序都有自己的存储空间，应用程序不可访问别的存储空间（越狱除外） 沙盒目录 Documents：iTunes会备份该目录。一般用来存储需要持久化的数据。  Library/Caches：缓存，iTunes不会备份该目录。内存不足时会被清除，应用没有运行时，可能会被清除，。一般存储体积大、不需要备份的非重要数据。  Library/Preferenc">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-02T04:43:00.219Z">
+<meta property="og:updated_time" content="2018-04-02T04:50:49.842Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="沙盒介绍">
 <meta name="twitter:description" content="沙盒机制沙盒是一个独立、封闭、安全的空间，每个应用程序都有自己的存储空间，应用程序不可访问别的存储空间（越狱除外） 沙盒目录 Documents：iTunes会备份该目录。一般用来存储需要持久化的数据。  Library/Caches：缓存，iTunes不会备份该目录。内存不足时会被清除，应用没有运行时，可能会被清除，。一般存储体积大、不需要备份的非重要数据。  Library/Preferenc">
@@ -315,6 +315,7 @@
 <h5 id="获取Library-Caches目录路径"><a href="#获取Library-Caches目录路径" class="headerlink" title="获取Library/Caches目录路径"></a>获取Library/Caches目录路径</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSString *path = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;</span><br><span class="line">NSString *filePath = [path stringByAppendingPathComponent:@&quot;test.data&quot;];</span><br></pre></td></tr></table></figure>
 <h5 id="获取目录路径"><a href="#获取目录路径" class="headerlink" title="获取目录路径"></a>获取目录路径</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *homePath = NSHomeDirectory();</span><br></pre></td></tr></table></figure>
 <h5 id="获取temp目录路径"><a href="#获取temp目录路径" class="headerlink" title="获取temp目录路径"></a>获取temp目录路径</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSString *tmp= NSTemporaryDirectory();</span><br><span class="line">NSString *filePath = [tmp stringByAppendingPathComponent:@&quot;test.data&quot;];</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/CoderMSY/SandboxHelper" target="_blank" rel="noopener">代码详情</a></p>
 
       
     </div>
@@ -338,6 +339,10 @@
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/01/博客发布相关指令/" rel="next" title="博客发布相关指令">
+                <i class="fa fa-chevron-left"></i> 博客发布相关指令
+              </a>
             
           </div>
 
