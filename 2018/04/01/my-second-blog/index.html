@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="https://www.jianshu.com/p/ea1e6b210b27 ###1.CoCoaLumberJack的日志级别有如下几种：  LOG_LEVEL_ERROR：如果设置为LOG_LEVEL_ERROR，仅仅能看到Error相关的日志输出。 LOG_LEVEL_WARN：如果设置为LOG_LEVEL_WARN，能看到Error、Warn相关的日志输出。 LOG_LEVEL_INFO：">
+<meta name="description" content="https://www.jianshu.com/p/ea1e6b210b27 1.CoCoaLumberJack的日志级别有如下几种： LOG_LEVEL_ERROR：如果设置为LOG_LEVEL_ERROR，仅仅能看到Error相关的日志输出。 LOG_LEVEL_WARN：如果设置为LOG_LEVEL_WARN，能看到Error、Warn相关的日志输出。 LOG_LEVEL_INFO：如果设置">
 <meta name="keywords" content="iOS开发技术博客">
 <meta property="og:type" content="article">
 <meta property="og:title" content="my second blog">
 <meta property="og:url" content="http://yoursite.com/2018/04/01/my-second-blog/index.html">
 <meta property="og:site_name" content="CoderMSY&#39;s Blog">
-<meta property="og:description" content="https://www.jianshu.com/p/ea1e6b210b27 ###1.CoCoaLumberJack的日志级别有如下几种：  LOG_LEVEL_ERROR：如果设置为LOG_LEVEL_ERROR，仅仅能看到Error相关的日志输出。 LOG_LEVEL_WARN：如果设置为LOG_LEVEL_WARN，能看到Error、Warn相关的日志输出。 LOG_LEVEL_INFO：">
+<meta property="og:description" content="https://www.jianshu.com/p/ea1e6b210b27 1.CoCoaLumberJack的日志级别有如下几种： LOG_LEVEL_ERROR：如果设置为LOG_LEVEL_ERROR，仅仅能看到Error相关的日志输出。 LOG_LEVEL_WARN：如果设置为LOG_LEVEL_WARN，能看到Error、Warn相关的日志输出。 LOG_LEVEL_INFO：如果设置">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-04-01T06:51:55.166Z">
+<meta property="og:updated_time" content="2018-04-02T01:34:59.977Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="my second blog">
-<meta name="twitter:description" content="https://www.jianshu.com/p/ea1e6b210b27 ###1.CoCoaLumberJack的日志级别有如下几种：  LOG_LEVEL_ERROR：如果设置为LOG_LEVEL_ERROR，仅仅能看到Error相关的日志输出。 LOG_LEVEL_WARN：如果设置为LOG_LEVEL_WARN，能看到Error、Warn相关的日志输出。 LOG_LEVEL_INFO：">
+<meta name="twitter:description" content="https://www.jianshu.com/p/ea1e6b210b27 1.CoCoaLumberJack的日志级别有如下几种： LOG_LEVEL_ERROR：如果设置为LOG_LEVEL_ERROR，仅仅能看到Error相关的日志输出。 LOG_LEVEL_WARN：如果设置为LOG_LEVEL_WARN，能看到Error、Warn相关的日志输出。 LOG_LEVEL_INFO：如果设置">
 
 
 
@@ -301,8 +301,7 @@
 
       
         <p><a href="https://www.jianshu.com/p/ea1e6b210b27" target="_blank" rel="noopener">https://www.jianshu.com/p/ea1e6b210b27</a></p>
-<p>###1.CoCoaLumberJack的日志级别有如下几种：</p>
-<ul>
+<h3 id="1-CoCoaLumberJack的日志级别有如下几种："><a href="#1-CoCoaLumberJack的日志级别有如下几种：" class="headerlink" title="1.CoCoaLumberJack的日志级别有如下几种："></a>1.CoCoaLumberJack的日志级别有如下几种：</h3><ul>
 <li>LOG_LEVEL_ERROR：如果设置为LOG_LEVEL_ERROR，仅仅能看到Error相关的日志输出。</li>
 <li>LOG_LEVEL_WARN：如果设置为LOG_LEVEL_WARN，能看到Error、Warn相关的日志输出。</li>
 <li>LOG_LEVEL_INFO：如果设置为LOG_LEVEL_INFO，能够看到Error、Warn、Info相关的日志输出。</li>
@@ -311,8 +310,8 @@
 <li>LOG_LEVEL_OFF:不输出日志。</li>
 </ul>
 <p>DDLogLevel 定义了全局的 log 等级，DDLogFlag 是我们打 log 时设定的 log 等级，CocoaLumberjack 会比较两者，如果 flag 低于 level，则不会打 log：</p>
-<p>###2.如何使用<br>使用宏来处理，指定日志的记录级别<br>创建一个PCH文件，并添加如下代码：<br>//定义并导入CoCoaLumberJack框架<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">#define LOG_LEVEL_DEF ddLogLevel</span><br><span class="line">#import &lt;CocoaLumberjack.h&gt;</span><br><span class="line"></span><br><span class="line">//通过DEBUG模式设置全局日志等级，DEBUG时为Verbose，所有日志信息都可以打印，否则Error，只打印</span><br><span class="line">#ifdef DEBUG</span><br><span class="line">static const DDLogLevel ddLogLevel = DDLogLevelVerbose;</span><br><span class="line">#else</span><br><span class="line">static const DDLogLevel ddLogLevel = DDLogLevelError;</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#endif /* PrefixHeader_pch */</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">在代码中就可以使用DDLogError/DDLogWarn/DDLogDebug/DDLogVerbose来无缝替代NSLog，例如：</span><br><span class="line"></span><br><span class="line">DDLogError(@&quot;[Error]:%@&quot;, @&quot;输出错误信息&quot;);//输出错误信息</span><br><span class="line">DDLogWarn(@&quot;[Warn]:%@&quot;, @&quot;输出警告信息&quot;);//输出警告信息</span><br><span class="line">DDLogInfo(@&quot;[Info]:%@&quot;, @&quot;输出描述信息&quot;);//输出描述信息</span><br><span class="line">DDLogDebug(@&quot;[Debug]:%@&quot;, @&quot;输出调试信息&quot;);//输出调试信息</span><br><span class="line">DDLogVerbose(@&quot;[Verbose]:%@&quot;, @&quot;输出详细信息&quot;);//输出详细信息</span><br><span class="line"></span><br><span class="line">在PCH文件中，再次宏定义一下，例如DDLogError：</span><br><span class="line"></span><br><span class="line">``` objective-c</span><br><span class="line">#ifdef DEBUG</span><br><span class="line">#define DLog(format, ...) DDLogError((@&quot;[文件名:%s]&quot; &quot;[函数名:%s]&quot; &quot;[行号:%d]&quot; format), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);</span><br><span class="line">#else</span><br><span class="line">#define DLog(...);</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">DLog(@&quot;User selected file:%@ withSize:%d&quot;, @&quot;filePath&quot;, 123);</span><br><span class="line">[fg214,57,30;2016-05-17 01:17:22:443 MD5[28301:3795644] [文件名:/Users/lg/Desktop/Log/Log/ViewController.m][函数名:-[ViewController viewDidLoad]][行号:31]User selected file:filePath withSize:123</span><br></pre></td></tr></table></figure></p>
-<p>###3.CocoaLumberjack框架主要文件分类<br>需要添加的主要文件有四个：</p>
+<h3 id="2-如何使用"><a href="#2-如何使用" class="headerlink" title="2.如何使用"></a>2.如何使用</h3><p>使用宏来处理，指定日志的记录级别<br>创建一个PCH文件，并添加如下代码：<br>//定义并导入CoCoaLumberJack框架<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">#define LOG_LEVEL_DEF ddLogLevel</span><br><span class="line">#import &lt;CocoaLumberjack.h&gt;</span><br><span class="line"></span><br><span class="line">//通过DEBUG模式设置全局日志等级，DEBUG时为Verbose，所有日志信息都可以打印，否则Error，只打印</span><br><span class="line">#ifdef DEBUG</span><br><span class="line">static const DDLogLevel ddLogLevel = DDLogLevelVerbose;</span><br><span class="line">#else</span><br><span class="line">static const DDLogLevel ddLogLevel = DDLogLevelError;</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#endif /* PrefixHeader_pch */</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">在代码中就可以使用DDLogError/DDLogWarn/DDLogDebug/DDLogVerbose来无缝替代NSLog，例如：</span><br><span class="line"></span><br><span class="line">DDLogError(@&quot;[Error]:%@&quot;, @&quot;输出错误信息&quot;);//输出错误信息</span><br><span class="line">DDLogWarn(@&quot;[Warn]:%@&quot;, @&quot;输出警告信息&quot;);//输出警告信息</span><br><span class="line">DDLogInfo(@&quot;[Info]:%@&quot;, @&quot;输出描述信息&quot;);//输出描述信息</span><br><span class="line">DDLogDebug(@&quot;[Debug]:%@&quot;, @&quot;输出调试信息&quot;);//输出调试信息</span><br><span class="line">DDLogVerbose(@&quot;[Verbose]:%@&quot;, @&quot;输出详细信息&quot;);//输出详细信息</span><br><span class="line"></span><br><span class="line">在PCH文件中，再次宏定义一下，例如DDLogError：</span><br><span class="line"></span><br><span class="line">``` objective-c</span><br><span class="line">#ifdef DEBUG</span><br><span class="line">#define DLog(format, ...) DDLogError((@&quot;[文件名:%s]&quot; &quot;[函数名:%s]&quot; &quot;[行号:%d]&quot; format), __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__);</span><br><span class="line">#else</span><br><span class="line">#define DLog(...);</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">DLog(@&quot;User selected file:%@ withSize:%d&quot;, @&quot;filePath&quot;, 123);</span><br><span class="line">[fg214,57,30;2016-05-17 01:17:22:443 MD5[28301:3795644] [文件名:/Users/lg/Desktop/Log/Log/ViewController.m][函数名:-[ViewController viewDidLoad]][行号:31]User selected file:filePath withSize:123</span><br></pre></td></tr></table></figure></p>
+<h3 id="3-CocoaLumberjack框架主要文件分类"><a href="#3-CocoaLumberjack框架主要文件分类" class="headerlink" title="3.CocoaLumberjack框架主要文件分类"></a>3.CocoaLumberjack框架主要文件分类</h3><p>需要添加的主要文件有四个：</p>
 <ul>
 <li>1.@DDLog（整个框架的基础）</li>
 <li>2.@DDASLLogger（发送日志语句到苹果的日志系统，以便它们显示在Console.app上）//个人建议没有必要</li>
@@ -320,7 +319,7 @@
 <li>4.@DDFIleLoger（把日志语句发送至文件）</li>
 </ul>
 <p>DDLog是强制性的，其余的都是可选的，这取决于你打算如何使用这个框架。例如，如果你不打算纪录到一个文件，你可以跳过DDFileLogger，或者你想跳过ASL以便更快的文件记录，你可以跳过DDASLLoger。</p>
-<p>###4.需要注意的是：<br>在使用DDLogError或者DLog之前，首先得在application:didFinishLaunchingWithOptions:方法中配置这个日志框架：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//开始时，你需要下面两行代码：</span><br><span class="line">[DDLog addLogger:[DDASLLogger sharedInstance]]; </span><br><span class="line">[DDLog addLogger:[DDTTYLogger sharedInstance]]; </span><br><span class="line">//这将在你的日志框架中添加两个“logger”。也就是说你的日志语句将被发送到Console.app和Xcode控制 台（就像标准的NSLog）</span><br><span class="line"></span><br><span class="line">//这个框架的好处之一就是它的灵活性，如果你还想要你的日志语句写入到一个文件中，你可以添加和配置一个file logger:</span><br><span class="line">fileLogger = [[DDFileLogger alloc] init]; </span><br><span class="line">fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling </span><br><span class="line">fileLogger.logFileManager.maximumNumberOfLogFiles = 7; </span><br><span class="line"></span><br><span class="line">[DDLog addLogger:fileLogger]; </span><br><span class="line"></span><br><span class="line">//上面的代码告诉应用程序要在系统上保持一周的日志文件。</span><br><span class="line">//如果不设置rollingFrequency和maximumNumberOfLogFiles，</span><br><span class="line">//则默认每天1个Log文件、存5天、单个文件最大1M、总计最大20M，否则自动清理最前面的记录。</span><br></pre></td></tr></table></figure></p>
+<h3 id="4-需要注意的是："><a href="#4-需要注意的是：" class="headerlink" title="4.需要注意的是："></a>4.需要注意的是：</h3><p>在使用DDLogError或者DLog之前，首先得在application:didFinishLaunchingWithOptions:方法中配置这个日志框架：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">//开始时，你需要下面两行代码：</span><br><span class="line">[DDLog addLogger:[DDASLLogger sharedInstance]]; </span><br><span class="line">[DDLog addLogger:[DDTTYLogger sharedInstance]]; </span><br><span class="line">//这将在你的日志框架中添加两个“logger”。也就是说你的日志语句将被发送到Console.app和Xcode控制 台（就像标准的NSLog）</span><br><span class="line"></span><br><span class="line">//这个框架的好处之一就是它的灵活性，如果你还想要你的日志语句写入到一个文件中，你可以添加和配置一个file logger:</span><br><span class="line">fileLogger = [[DDFileLogger alloc] init]; </span><br><span class="line">fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling </span><br><span class="line">fileLogger.logFileManager.maximumNumberOfLogFiles = 7; </span><br><span class="line"></span><br><span class="line">[DDLog addLogger:fileLogger]; </span><br><span class="line"></span><br><span class="line">//上面的代码告诉应用程序要在系统上保持一周的日志文件。</span><br><span class="line">//如果不设置rollingFrequency和maximumNumberOfLogFiles，</span><br><span class="line">//则默认每天1个Log文件、存5天、单个文件最大1M、总计最大20M，否则自动清理最前面的记录。</span><br></pre></td></tr></table></figure></p>
 <p>接下来上传，可以从DDLogFileManager protocol下面的两个协议中获取Log文件rolling时的通知，便可以在此时将Log文件上传：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//Notifications from DDFileLogger</span><br><span class="line">- (void)didArchiveLogFile:(NSString *)logFilePath;</span><br><span class="line">- (void)didRollAndArchiveLogFile:(NSString *)logFilePath;</span><br></pre></td></tr></table></figure></p>
 <p><strong>但是我并没有这样做，因为后来发现一个问题：</strong><br>而CocoaLumberJack只会记录下我们主动打印过的信息，而不会抓取、记录下苹果自带的crash信息，更不会在下一次程序启动时通知我们程序是否崩溃过。</p>
 
@@ -347,8 +346,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/04/01/my-first-blog/" rel="next" title="my first blog">
-                <i class="fa fa-chevron-left"></i> my first blog
+              <a href="/2018/04/01/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
               </a>
             
           </div>
@@ -407,8 +406,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -450,6 +458,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-CoCoaLumberJack的日志级别有如下几种："><span class="nav-number">1.</span> <span class="nav-text">1.CoCoaLumberJack的日志级别有如下几种：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-如何使用"><span class="nav-number">2.</span> <span class="nav-text">2.如何使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-CocoaLumberjack框架主要文件分类"><span class="nav-number">3.</span> <span class="nav-text">3.CocoaLumberjack框架主要文件分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-需要注意的是："><span class="nav-number">4.</span> <span class="nav-text">4.需要注意的是：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
