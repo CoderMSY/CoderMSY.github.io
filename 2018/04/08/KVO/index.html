@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Key-Value Observing@(KVO)[原理|实现] KVO是观察者设计模式的一种实现，另外一种是通知机制（Notification）。它定义了对象之间观察和通知状态改变的通用机制。例如，指定一个被观察对象(例如 A 类)，当对象某个属性(例如 A 中的字符串 name)发生更改时，对象会获得通知，并作出相应处理；【且不需要给被观察的对象添加任何额外代码，就能使用 KVO 机制】 在M">
+<meta name="keywords" content="iOS开发技术博客">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KVO原理及实现">
+<meta property="og:url" content="http://yoursite.com/2018/04/08/KVO/index.html">
+<meta property="og:site_name" content="CoderMSY&#39;s Blog">
+<meta property="og:description" content="Key-Value Observing@(KVO)[原理|实现] KVO是观察者设计模式的一种实现，另外一种是通知机制（Notification）。它定义了对象之间观察和通知状态改变的通用机制。例如，指定一个被观察对象(例如 A 类)，当对象某个属性(例如 A 中的字符串 name)发生更改时，对象会获得通知，并作出相应处理；【且不需要给被观察的对象添加任何额外代码，就能使用 KVO 机制】 在M">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-09T15:57:43.183Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KVO原理及实现">
+<meta name="twitter:description" content="Key-Value Observing@(KVO)[原理|实现] KVO是观察者设计模式的一种实现，另外一种是通知机制（Notification）。它定义了对象之间观察和通知状态改变的通用机制。例如，指定一个被观察对象(例如 A 类)，当对象某个属性(例如 A 中的字符串 name)发生更改时，对象会获得通知，并作出相应处理；【且不需要给被观察的对象添加任何额外代码，就能使用 KVO 机制】 在M">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/08/KVO/"/>
+
+
+
+
+
+  <title>KVO原理及实现 | CoderMSY's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CoderMSY's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">https://github.com/CoderMSY</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/08/KVO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Tammy Miao">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoderMSY's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">KVO原理及实现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-08T22:56:53+08:00">
+                2018-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Key-Value-Observing"><a href="#Key-Value-Observing" class="headerlink" title="Key-Value Observing"></a>Key-Value Observing</h1><p>@(KVO)[原理|实现]</p>
+<p><strong>KVO</strong>是观察者设计模式的一种实现，另外一种是通知机制（Notification）。它定义了对象之间观察和通知状态改变的通用机制。例如，指定一个被观察对象(例如 A 类)，当对象某个属性(例如 A 中的字符串 name)发生更改时，对象会获得通知，并作出相应处理；【且不需要给被观察的对象添加任何额外代码，就能使用 KVO 机制】</p>
+<p>在MVC架构下的项目，KVO机制很适合显示model和view之前的通讯。</p>
+<hr>
+<p>[TOC]</p>
+<h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><p>当观察某对象 A 时，KVO 机制动态创建一个对象A当前类的子类，并为这个新的子类重写了被观察属性 keyPath 的 setter 方法。setter 方法随后负责通知观察对象属性的改变状况。</p>
+<h2 id="深入剖析"><a href="#深入剖析" class="headerlink" title="深入剖析"></a>深入剖析</h2><p>Apple 使用了 isa 混写（isa-swizzling）来实现 KVO 。当观察对象A时，KVO机制动态创建一个新的名为：NSKVONotifying_A 的新类，该类继承自对象A的本类，且 KVO 为 NSKVONotifying_A 重写观察属性的 setter 方法，setter 方法会负责在调用原 setter 方法之前和之后，通知所有观察对象属性值的更改情况。<br>（备注： isa 混写（isa-swizzling）isa：is a kind of ； swizzling：混合，搅合；）</p>
+<p>①<strong>NSKVONotifying_A 类剖析：</strong>在这个过程，被观察对象的 isa 指针从指向原来的 A 类，被 KVO 机制修改为指向<strong>系统新创建的子类 NSKVONotifying_A 类，来实现当前类属性值改变的监听；</strong><br>所以当我们从应用层面上看来，完全没有意识到有新的类出现，这是系统“隐瞒”了对 KVO 的底层实现过程，让我们误以为还是原来的类。但是此时如果我们创建一个新的名为“NSKVONotifying_A”的类，就会发现系统运行到注册 KVO 的那段代码时程序就崩溃，因为系统在注册监听的时候动态创建了名为 NSKVONotifying_A 的中间类，并指向这个中间类了。<br>（<strong>isa</strong> 指针的作用：每个对象都有 isa 指针，指向该对象的类，它告诉 Runtime 系统这个对象的类是什么。所以对象注册为观察者时，isa 指针指向新子类，<strong>那么这个被观察的对象就神奇地变成新子类的对象（或实例）了</strong>。） 因而在该对象上对 setter 的调用就会调用已重写的 setter，从而激活键值通知机制。<br>—&gt;我猜，这也是 KVO 回调机制，为什么都俗称KVO技术为黑魔法的原因之一吧：内部神秘、外观简洁。<br>②<strong>子类setter方法剖析：</strong>KVO 的键值观察通知依赖于 NSObject 的两个方法:willChangeValueForKey:和 didChangevlueForKey:，在存取数值的前后分别调用 2 个方法：<br>被观察属性发生<strong>改变之前</strong>，willChangeValueForKey:被调用，通知系统该 keyPath 的属性值即将变更；当<strong>改变发生后</strong>， didChangeValueForKey: 被调用，通知系统该 keyPath 的属性值已经变更；<strong>之后</strong>， observeValueForKey:ofObject:change:context: 也会被调用。且重写观察属性的 setter 方法这种继承方式的注入是在<strong>运行时</strong>而<strong>不是编译时</strong>实现的。<br>KVO 为子类的观察者属性重写调用存取方法的工作原理在代码中相当于：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-(<span class="keyword">void</span>)setName:(<span class="built_in">NSString</span> *)newName&#123; </span><br><span class="line">[<span class="keyword">self</span> willChangeValueForKey:<span class="string">@"name"</span>];    <span class="comment">//KVO 在调用存取方法之前总调用 </span></span><br><span class="line">[<span class="keyword">super</span> setValue:newName forKey:<span class="string">@"name"</span>]; <span class="comment">//调用父类的存取方法 </span></span><br><span class="line">[<span class="keyword">self</span> didChangeValueForKey:<span class="string">@"name"</span>];     <span class="comment">//KVO 在调用存取方法之后总调用</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><blockquote>
+<p>观察者观察的是属性，只有遵循 KVO 变更属性值的方式才会执行 KVO 的回调方法，例如是否执行了 setter 方法、或者是否使用了 KVC 赋值。<br>如果赋值没有通过 setter 方法或者 KVC，而是直接修改属性对应的成员变量，例如：仅调用 <code>_name = @&quot;newName&quot;</code>，这时是不会触发 KVO 机制，更加不会调用回调方法的。<br>所以使用 KVO 机制的前提是遵循 KVO 的属性设置方式来变更属性值。</p>
+</blockquote>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)addObserver:(<span class="built_in">NSObject</span> *)observer</span><br><span class="line">forKeyPath:(<span class="built_in">NSString</span> *)keyPath</span><br><span class="line">options:(<span class="built_in">NSKeyValueObservingOptions</span>)options</span><br><span class="line">context:(<span class="keyword">void</span> *)context</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>observer</strong> ：注册 <strong>KVO</strong> 通知的对象。观察者必须实现 <code>key-value observing</code> 方法 <code>observeValueForKeyPath:ofObject:change:context:</code>。</li>
+<li><strong>keyPath</strong> ：观察者的属性的 <code>keypath</code>，相对于接受者，值不能是 <code>nil</code>。</li>
+<li><strong>options</strong> ：<code>NSKeyValueObservingOptions</code> 的组合，它指定了观察通知中包含了什么，可以查看 “NSKeyValueObservingOptions”。</li>
+<li><strong>context</strong>:在 <code>observeValueForKeyPath:ofObject:change:context:</code>传给 <code>observer</code> 参数的随机数据</li>
+</ul>
+<p>让这个API不堪入目的事实就是最后两个参数经常是 0 和 NULL。</p>
+<p><code>options</code> 代表 <code>NSKeyValueObservingOptions</code> 的位掩码，需要注意 <code>NSKeyValueObservingOptionNew</code> &amp; <code>NSKeyValueObservingOptionOld</code> ，因为这些是你经常要用到的，可以跳过 <code>NSKeyValueObservingOptionInitial</code> &amp; <code>NSKeyValueObservingOptionPrior:</code></p>
+<h3 id="NSKeyValueObservingOptions"><a href="#NSKeyValueObservingOptions" class="headerlink" title="NSKeyValueObservingOptions"></a>NSKeyValueObservingOptions</h3><ul>
+<li><code>NSKeyValueObservingOptionNew</code>: 表明变化的字典应该提供新的属性值，如何可以的话。</li>
+<li><code>NSKeyValueObservingOptionOld</code>: 表明变化的字典应该包含旧的属性值，如何可以的话。</li>
+<li><code>NSKeyValueObservingOptionInitial</code>: 如果被指定，一个通知会立刻发送到观察者，甚至在观察者注册方法之前就返回，改变的字典需要包含一个 <code>NSKeyValueChangeNewKey</code> 入口，如果 <code>NSKeyValueObservingOptionNew</code> 也被指定的话，但从来不会包含一个<code>NSKeyValueChangeOldKey</code> 入口。（在一个 initial notification 里，观察者的当前属性可能是旧的，但对观察者来说是新的），你可以使用这个选项代替显式的调用，同时，代码也会被观察者的 <code>observeValueForKeyPath:ofObject:change:context:</code> 方法调用，当这个选项被用于 <code>addObserver:forKeyPath:options:context:</code>，一个通知将会发送到每个被观察者添加进去的索引对象中。</li>
+<li><code>NSKeyValueObservingOptionPrior</code>:是否各自的通知应该在每个改变前后发送到观察者，而不是在改变之后发送一个单独的通知。一个通知中的可变数组在改变发生之前发送经常包含一个 <code>NSKeyValueChangeNotificationIsPriorKey</code> 入口且它的值是 @YES，但从来不会包含一个 <code>NSKeyValueChangeNewKey</code> 入口。当这个选项被指定，在改变之后发送的通知中的变化的字典包含了一个与在选项没有被指定的情况下应该包含的同一个入口，当观察者自己的键值观察需要它的时候，你可以使用这个选项来调用 -willChange… 方法中的一个来观察它自己的某个属性，那个属性的值依赖于被观察的对象的属性。（在那种情况，调用 -willChange… 来对收到的一个<code>observeValueForKeyPath:ofObject:change:context:</code> 消息做出反应可能就太晚了）</li>
+</ul>
+<h4 id="1-注册对象myKVO为被观察者"><a href="#1-注册对象myKVO为被观察者" class="headerlink" title="1.注册对象myKVO为被观察者:"></a>1.注册对象myKVO为被观察者:</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">self</span>.kvoModel addObserver:<span class="keyword">self</span> forKeyPath:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(kvoNum)) options:<span class="built_in">NSKeyValueObservingOptionOld</span> | <span class="built_in">NSKeyValueObservingOptionNew</span> context:<span class="literal">nil</span>];</span><br></pre></td></tr></table></figure>
+<h4 id="2-只要object的keyPath属性发生变化，就会调用此回调方法，进行相应的处理：UI更新："><a href="#2-只要object的keyPath属性发生变化，就会调用此回调方法，进行相应的处理：UI更新：" class="headerlink" title="2.只要object的keyPath属性发生变化，就会调用此回调方法，进行相应的处理：UI更新："></a>2.只要object的keyPath属性发生变化，就会调用此回调方法，进行相应的处理：UI更新：</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//通过改变KVOModel的kvoNum值</span></span><br><span class="line">- (<span class="keyword">IBAction</span>)addBtnClicked:(<span class="built_in">UIButton</span> *)sender &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">self</span>.kvoModel.kvoNum = <span class="keyword">self</span>.kvoModel.kvoNum + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)observeValueForKeyPath:(<span class="built_in">NSString</span> *)keyPath ofObject:(<span class="keyword">id</span>)object change:(<span class="built_in">NSDictionary</span>&lt;<span class="built_in">NSKeyValueChangeKey</span>,<span class="keyword">id</span>&gt; *)change context:(<span class="keyword">void</span> *)context &#123;</span><br><span class="line"><span class="keyword">if</span> (object == <span class="keyword">self</span>.kvoModel) &#123;</span><br><span class="line"><span class="keyword">if</span> ([keyPath isEqualToString:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(kvoNum))]) &#123;</span><br><span class="line"><span class="keyword">self</span>.oldLab.text = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"旧值为:%@"</span>,[change valueForKey:<span class="string">@"old"</span>]];</span><br><span class="line"><span class="keyword">self</span>.freshLab.text = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"新值为:%@"</span>,[change valueForKey:<span class="string">@"new"</span>]];</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-移除KVO"><a href="#3-移除KVO" class="headerlink" title="3.移除KVO"></a>3.移除KVO</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">self</span> removeObserver:<span class="keyword">self</span> forKeyPath:<span class="built_in">NSStringFromSelector</span>(<span class="keyword">@selector</span>(kvoNum)) context:<span class="literal">nil</span>];</span><br></pre></td></tr></table></figure>
+<hr>
+<blockquote>
+<p>参考链接<br><a href="https://www.jianshu.com/p/e59bb8f59302" target="_blank" rel="noopener">简书</a><br><a href="http://nshipster.cn/key-value-observing/" target="_blank" rel="noopener">Mattt Thompson</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/02/IM-技术选型及相关逻辑/" rel="next" title="IM 技术选型及相关逻辑">
+                <i class="fa fa-chevron-left"></i> IM 技术选型及相关逻辑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Tammy Miao</p>
+              <p class="site-description motion-element" itemprop="description">追求优雅的代码风格</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Key-Value-Observing"><span class="nav-number">1.</span> <span class="nav-text">Key-Value Observing</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基本原理"><span class="nav-number">1.1.</span> <span class="nav-text">基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深入剖析"><span class="nav-number">1.2.</span> <span class="nav-text">深入剖析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#特点"><span class="nav-number">1.2.1.</span> <span class="nav-text">特点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用"><span class="nav-number">1.3.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NSKeyValueObservingOptions"><span class="nav-number">1.3.1.</span> <span class="nav-text">NSKeyValueObservingOptions</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-注册对象myKVO为被观察者"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">1.注册对象myKVO为被观察者:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-只要object的keyPath属性发生变化，就会调用此回调方法，进行相应的处理：UI更新："><span class="nav-number">1.3.1.2.</span> <span class="nav-text">2.只要object的keyPath属性发生变化，就会调用此回调方法，进行相应的处理：UI更新：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-移除KVO"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">3.移除KVO</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Tammy Miao</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
